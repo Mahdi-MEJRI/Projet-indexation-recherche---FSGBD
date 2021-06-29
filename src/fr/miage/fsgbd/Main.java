@@ -14,11 +14,11 @@ import java.util.TreeMap;
 
 public class Main {
 
-	void createBase() {
+	void createBase(String nomBd) {
 
 		// Cr�ation du fichier
 		try {
-			File myObj = new File("BD.txt");
+			File myObj = new File(nomBd);
 			if (myObj.createNewFile()) {
 				System.out.println("Le fichier a ete cree : " + myObj.getName());
 			} else {
@@ -33,7 +33,7 @@ public class Main {
 		// G�neration des lignes de la base
 		long numSecu;
 		try {
-			FileWriter myWriter = new FileWriter("BD.txt");
+			FileWriter myWriter = new FileWriter(nomBd);
 			myWriter.write( "    N� S�curit� sociale     Nom        Pr�nom        Adresse        Telephone \n");
 			int i;
 			for (i=1; i<=10000; i++ ) {
@@ -48,6 +48,20 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
+
+
+	String rechSeqFich(long val, String nomBd) throws IOException {
+		String ligne;
+		long nSecu;
+		for (int i=1; i<= 10000; i++) {
+			ligne = Files.readAllLines(Paths.get(nomBd)).get(i);
+			String s[] = ligne.split("\\s+");
+			nSecu = Long.valueOf(s[1]);
+			if (nSecu == val) return ligne;
+		}
+		return "La numero de securite sociale recherche n'existe pas !";
+	}
+
 
 
 
@@ -70,17 +84,18 @@ public class Main {
 
 		Main main = new Main();
 
+
 		// On cree le fichier BD
-		main.createBase();
+		String nomBd = "BD.txt";
+		main.createBase(nomBd);
 
 		// On lit le fichier et on construit l'index � partir du num de s�cu et du num de la ligne
 		System.out.println("**********************************************************************************");
 		System.out.println("Génération de l'index à partir du fichier ...");
-		String fichier = "BD.txt";
 		String ligne;
 		long nSecu;
 		for (int i=1; i<= 10000; i++) {
-			ligne = Files.readAllLines(Paths.get(fichier)).get(i);
+			ligne = Files.readAllLines(Paths.get(nomBd)).get(i);
 			String s[] = ligne.split("\\s+");
 			nSecu = Long.valueOf(s[1]);
 			index1.put(i, nSecu);
@@ -105,10 +120,12 @@ public class Main {
 		IndexSerializer saveIndex = new IndexSerializer(index2, "index.abr");
 
 
-		// Si on met tout le code du main qui precede en commentaire, on peut lire l'arbre precedent (serialisé)
-		// sans generer un nouveau fichier et un nouvel arbre
+		// Si on met tout le code de la methode main qui precede cette phrase en commentaire, on peut faire des traitements
+		// sur l'arbre precedent (serialise) sans generer un nouveau fichier et un nouvel arbre et un nouvel index
 
-
+		System.out.println("**********************************************************************************");
+		System.out.println("**********************************************************************************");
+		System.out.println("Déserialisation de l'arbre et de l'index ...");
 
 		// On charge l'arbre et l'index
 		BDeserializer<Long> load = new BDeserializer<Long>();
@@ -125,13 +142,19 @@ public class Main {
 
 		// On essai de chercher une ligne du fichier en partant d'un num de sécu
 		System.out.println("**********************************************************************************");
-		System.out.println("Recherche d'une ligne du fichier à partir d'un n° de secu et de l'index");
-		System.out.println(bLongChargee.chercherLigne(118900654617020L, indexChargee, "BD.txt"));
+		System.out.println("Recherche d'une ligne du fichier à partir d'un n° de secu et de l'index : \n");
+		System.out.println(bLongChargee.chercherLigne(101917020893904L, indexChargee, "BD.txt"));
 
 		// Affichage séquenciel des feuilles de l'arbre (une feuille par ligne)
 		System.out.println("**********************************************************************************");
 		System.out.println("Affichage séquenciel des feuilles (une feuille par ligne)");
 		bLongChargee.afficheSeqArbre();
+
+		System.out.println("**********************************************************************************");
+		System.out.println("Recherche séquencielle d'une ligne du fichier : \n");
+		System.out.println(main.rechSeqFich(101917020893904L, "BD.txt"));
+
+
 
 
 		/*

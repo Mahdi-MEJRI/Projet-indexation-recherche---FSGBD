@@ -23,6 +23,17 @@ public class BTreePlus<Type> implements java.io.Serializable {
         racine.afficheNoeud(true, 0);
     }
 
+    // Méthode pour chercher une ligne dans un fichier à partir d'une val et un index
+    public String chercherLigne(Type val, Map dict, String file) throws IOException {
+        int numLigne;
+        if (this.contient(val) != null) {
+            numLigne = (int) dict.get((Type) val);
+            return Files.readAllLines(Paths.get(file)).get(numLigne);
+        }
+        else
+            return "La numero de securite sociale recherche n'existe pas !";
+    }
+
     // Affichage sequenciel de l'arbre
     public void afficheSeqArbre() {
         // On recupere la 1ere feuille
@@ -79,14 +90,5 @@ public class BTreePlus<Type> implements java.io.Serializable {
         return racine.contient(valeur);
     }
 
-    // Méthode pour touver une ligne dans un fichier à partir d'une val et un index
-    public String chercherLigne(Type val, Map dict, String file) throws IOException {
-        int numLigne;
-        if (this.contient(val) != null) {
-            numLigne = (int) dict.get((Type) val);
-            return Files.readAllLines(Paths.get(file)).get(numLigne);
-        }
-        else
-            return "La numero de securite sociale recherche n'existe pas !";
-    }
+
 }
