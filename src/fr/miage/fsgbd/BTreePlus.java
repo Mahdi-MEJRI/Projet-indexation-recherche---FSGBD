@@ -23,6 +23,13 @@ public class BTreePlus<Type> implements java.io.Serializable {
         racine.afficheNoeud(true, 0);
     }
 
+    // Affichage sequenciel de l'arbre
+    public void afficheSeqArbre() {
+        // On recupere la 1ere feuille
+        Noeud<Type> premiereFeuille = racine.getPremFeui();
+        premiereFeuille.affichSeqFeuilles();
+    }
+
     /**
      * Méthode récursive permettant de récupérer tous les noeuds
      *

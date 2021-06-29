@@ -42,7 +42,7 @@ public class Main {
 						+ "      adresse " + i + "      telephone " + i + "\n");
 			}
 			myWriter.close();
-			System.out.println("Succes de l'ecriture sur le fichier.");
+			System.out.println("Succés de l'écriture sur le fichier.");
 		} catch (IOException e) {
 			System.out.println("Erreur.");
 			e.printStackTrace();
@@ -74,6 +74,8 @@ public class Main {
 		main.createBase();
 
 		// On lit le fichier et on construit l'index � partir du num de s�cu et du num de la ligne
+		System.out.println("**********************************************************************************");
+		System.out.println("Génération de l'index à partir du fichier ...");
 		String fichier = "BD.txt";
 		String ligne;
 		long nSecu;
@@ -83,13 +85,16 @@ public class Main {
 			nSecu = Long.valueOf(s[1]);
 			index1.put(i, nSecu);
 			index2.put(nSecu, i);
+			System.out.println(nSecu + " ---> " + i);
 		}
 		// On g�nere un arbre B+ � partir de l'index (num de s�cu qui pointe vers le num�ro de la ligne dans le fichier)
+		System.out.println("**********************************************************************************");
+		System.out.println("Construction de l'arbre");
 		TestLong testLong = new TestLong();
 		fr.miage.fsgbd.BTreePlus<Long> bLong = new fr.miage.fsgbd.BTreePlus<Long>(2,  testLong);
 
 		for (int i=1; i<= 10000; i++) {
-			System.out.println("valeur " + index1.get(i) + "    pointeur " + i);
+			System.out.println("Num de secu " + index1.get(i) + " --> ligne "  + i + " dans le fichier ");
 			bLong.addValeur((Long) index1.get(i));
 			bLong.afficheArbre();
 		}
@@ -99,6 +104,12 @@ public class Main {
 
 		IndexSerializer saveIndex = new IndexSerializer(index2, "index.abr");
 
+
+		// Si on met tout le code du main qui precede en commentaire, on peut lire l'arbre precedent (serialisé)
+		// sans generer un nouveau fichier et un nouvel arbre
+
+
+
 		// On charge l'arbre et l'index
 		BDeserializer<Long> load = new BDeserializer<Long>();
 		fr.miage.fsgbd.BTreePlus<Long> bLongChargee = load.getArbre("arbre.abr");
@@ -106,9 +117,21 @@ public class Main {
 		IndexDeserializer loadIndex = new IndexDeserializer();
 		TreeMap indexChargee = (TreeMap) loadIndex.getIndex("index.abr");
 
-		// On essai de chercher une valeur
+
+
+		System.out.println("**********************************************************************************");
+		System.out.println("Affichage de l'arbre");
+		bLongChargee.afficheArbre();
+
+		// On essai de chercher une ligne du fichier en partant d'un num de sécu
+		System.out.println("**********************************************************************************");
+		System.out.println("Recherche d'une ligne du fichier à partir d'un n° de secu et de l'index");
 		System.out.println(bLongChargee.chercherLigne(118900654617020L, indexChargee, "BD.txt"));
 
+		// Affichage séquenciel des feuilles de l'arbre (une feuille par ligne)
+		System.out.println("**********************************************************************************");
+		System.out.println("Affichage séquenciel des feuilles (une feuille par ligne)");
+		bLongChargee.afficheSeqArbre();
 
 
 		/*
