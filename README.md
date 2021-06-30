@@ -28,5 +28,6 @@ L’exécution des 100 recherches nous donne les résultats suivants :
 -	Temps moyen = 3.58 ms    
 
 En observant le temps de recherche moyen et le temps de recherche maximum pour la recherche avec l’index, on trouve qu’il n’est pas seulement plus petit, mais il est de l’ordre de « ln (de celui pour la recherche séquentielle) / ln (2) » . Le temps de recherche séquentielle minimum est non significatif parce qu’il correspond à une ligne qui se situe au début du document. 
+
 Ces résultats montrent que les arbres B+ et les index nous font gagner un temps énorme par rapport à une recherche séquentielle classique et confirment leur efficacité en termes de recherche de données.      
 
